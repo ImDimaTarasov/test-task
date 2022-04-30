@@ -2,9 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
 
-import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
-
 const EditIntern = () => {
     const { id } = useParams();
 
@@ -35,13 +32,25 @@ const EditIntern = () => {
         };
     };
     const handleChange = (event) => {
-        console.log(event.target)
         setIntern({...intern, [event.target.name]: event.target.value});
     };
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(intern)
+        if(emailValidator()){
+            console.log(intern)
+        }
+        return
     };
+
+    const emailValidator = () => {
+        const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        if(!intern.email || regex.test(intern.email) === false){
+            console.log("not valid")
+            return false;
+        }
+        return true;
+    }
+    
 
     return (
         <div>
@@ -63,6 +72,12 @@ const EditIntern = () => {
                 onChange={(e) => handleChange(e)}
                 required
             />
+            <div 
+                className='errorMessage' 
+                style={{display: emailValidator()? 'none' :'blockd'}}
+            >
+                required
+            </div>
             <label>Start</label>
             <input 
                 type="date" 
