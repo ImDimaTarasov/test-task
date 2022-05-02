@@ -37,8 +37,9 @@ const EditIntern = () => {
 
     const onSubmit = (event) => {
         event.preventDefault();
-        if(emailValidator()){
-            console.log(intern)
+        if(!emailValidator() || !dateValidator()){
+            console.log('required')
+            return
         }
         addInternToList();
     };
@@ -66,7 +67,7 @@ const EditIntern = () => {
         };
         return true;
     };
-    
+
     const dateValidator = () => {
         const startDate = new Date(intern.dateStart);
         const endDate = new Date(intern.dateEnd);
