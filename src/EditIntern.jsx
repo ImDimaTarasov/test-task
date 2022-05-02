@@ -19,44 +19,66 @@ const EditIntern = () => {
             const intern = await response.json();
             setIntern(changeInternDates(intern));
         }
-        fetchIntern()
+        fetchIntern();
         // console.log(`I want to get intern with id: ${id}!`)
     }, [id]);
+
     const changeInternDates = (intern) => {
         return {
-            id: intern.id,
             name: intern.name,
             email: intern.email,
-            dateStart: intern.internshipStart.substr(0, 10),
-            dateEnd: intern.internshipEnd.substr(0, 10),
+            dateStart: intern.internshipStart.slice(0, 10) ,
+            dateEnd: intern.internshipEnd.slice(0, 10),
         };
     };
     const handleChange = (event) => {
         setIntern({...intern, [event.target.name]: event.target.value});
     };
-    const handleSubmit = (event) => {
+
+    const onSubmit = (event) => {
         event.preventDefault();
         if(emailValidator()){
             console.log(intern)
         }
-        return
+        addInternToList();
+    };
+
+    const addInternToList = () => {
+        const requestOptions = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id: id,
+                name: intern.name,
+                email: intern.email,
+                internshipStart: intern.dateStart + "T00:00+00Z",
+                internshipEnd: intern.dateEnd + "T00:00+00Z"
+            })
+        };
+        fetch( `http://localhost:3001/interns/${id}`, requestOptions);
     };
 
     const emailValidator = () => {
         const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
         if(!intern.email || regex.test(intern.email) === false){
-            console.log("not valid")
             return false;
-        }
+        };
         return true;
-    }
+    };
+    
+    const dateValidator = () => {
+        const startDate = new Date(intern.dateStart);
+        const endDate = new Date(intern.dateEnd);
+        return endDate.getTime() >= startDate.getTime();
+    };
     
 
     return (
         <div>
         <NavLink to="/">Back to list </NavLink>
-        <form onSubmit={handleSubmit}>
-            <label>Name</label>
+        <form onSubmit={onSubmit}>
+            <label>Full name *</label>
             <input 
                 type="text" 
                 name="name" 
@@ -64,7 +86,7 @@ const EditIntern = () => {
                 onChange={(e) => handleChange(e)}
                 required
             />              
-            <label>Email</label>
+            <label>Email address*</label>
             <input 
                 type="text" 
                 name="email" 
@@ -74,26 +96,30 @@ const EditIntern = () => {
             />
             <div 
                 className='errorMessage' 
-                style={{display: emailValidator()? 'none' :'blockd'}}
+                style={{display: emailValidator()? 'none' :'block'}}
             >
-                required
+                This field is required
             </div>
-            <label>Start</label>
+            <label>Internship start *</label>
             <input 
                 type="date" 
                 name="dateStart" 
                 value={intern.dateStart}
                 onChange={(e) => handleChange(e)}
-                required
             />
-            <label>End</label>
+            <label>Internship end *</label>
             <input  
                 type="date" 
                 name="dateEnd" 
                 value={intern.dateEnd}
                 onChange={(e) => handleChange(e)}
-                required
             />
+            <div 
+                className='errorMessage' 
+                style={{display: dateValidator()? 'none' :'block'}}
+            >
+                This date is not correct
+            </div>
                 
             <input type="submit" value="Submit" />
         </form >

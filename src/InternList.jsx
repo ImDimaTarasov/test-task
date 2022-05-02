@@ -15,9 +15,9 @@ const InternList = () => {
     }, []);
 
     return (
-        <div>
-            {interns.map(u => (<div key={u.id}>{u.name} <NavLink to={`/interns/${u.id}`}>Edit</NavLink></div>))}
-        </div>
+        <ul>
+            {interns.map(u => (<li key={u.id}>{u.name} <NavLink to={`/interns/${u.id}`}>Edit</NavLink></li>))}
+        </ul>
     );
 };
 
