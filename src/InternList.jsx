@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
+import './internList.scss';
+
 const InternList = () => {
 
     const [interns, setInterns] = useState([]);
@@ -15,9 +17,22 @@ const InternList = () => {
     }, []);
 
     return (
-        <ul>
-            {interns.map(u => (<li key={u.id}>{u.name} <NavLink to={`/interns/${u.id}`}>Edit</NavLink></li>))}
-        </ul>
+       <article className='interns'>
+            <h3>Participants</h3>
+            <ul className='interns__list'>
+                {interns.map(u => (
+                    <li  
+                    key={u.id}
+                    className='interns__list_item'
+                    >
+                        {u.name} 
+                        <NavLink to={`/interns/${u.id}`}>
+                        <div className="icon">Edit</div>
+                        </NavLink>
+                    </li>
+                ))}
+            </ul>
+       </article>
     );
 };
 

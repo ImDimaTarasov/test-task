@@ -1,0 +1,47 @@
+.interns {
+    display: block;
+    background: #F7F7F7;
+    padding: 40px 80px 80px;
+    h3 {
+        font-style: normal;
+        font-weight: 500;
+        font-size: 40px;
+        line-height: 47px;
+        margin-bottom: 40px;
+    }
+    &__list {
+        list-style-type: none;
+        &_item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 400px;
+            height: 64px;
+            background: #EDEDED;
+            padding: 8px 24px;
+
+            font-style: normal;
+            font-weight: 400;
+            font-size: 18px;
+            line-height: 24px;
+            a {
+                text-decoration: none;
+                position: relative;
+                .icon:before {
+                    content: '';
+                    width: 24px;
+                    height: 24px;
+                    background: url('./icons/edit.svg') no-repeat ;
+                    position: absolute;
+                    left: -30px;
+                }
+            }
+        }
+        &_item:nth-child(2n) {
+            background: #F2F2F2;;
+        }
+        &_item:hover {
+            border: 2px solid #222222;
+        }
+    }
+}
