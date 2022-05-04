@@ -1,0 +1,10 @@
+.App {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    &__logo {
+        position: absolute;
+        left: 40px;
+        top: 40px;
+    }
+}

@@ -1,0 +1,35 @@
+@import './button';
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	color: #222222;
+}
+body {
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+		"Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+code {
+	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+		monospace;
+}
+
+.container {
+	display: block;
+	background: #f7f7f7;
+	padding: 40px 80px 80px;
+	margin-top: 136px;
+	min-width: 560px;
+	h3 {
+		font-style: normal;
+		font-weight: 500;
+		font-size: 40px;
+		line-height: 47px;
+		margin-bottom: 40px;
+	}
+}
