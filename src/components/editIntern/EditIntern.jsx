@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { NavLink } from "react-router-dom";
 
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
 import InternService from "../../services/InternService";
 
 import "./editIntern.scss";
@@ -29,102 +32,123 @@ const EditIntern = () => {
 	const handleChange = (event) => {
 		setIntern({ ...intern, [event.target.name]: event.target.value });
 	};
-	const onSubmit = (event) => {
-		event.preventDefault();
+	const onHandleSubmit = (data) => {
 		setAddInternLoading(true);
-		if (!emailValidator()) {
-			console.log("required");
-			return;
-		}
 		const body = JSON.stringify({
 			...intern,
-			internshipStart: new Date(intern.internshipStart).toISOString(),
-			internshipEnd: new Date(intern.internshipEnd).toISOString(),
+			internshipStart: new Date(data.internshipStart).toISOString(),
+			internshipEnd: new Date(data.internshipEnd).toISOString(),
 		});
 		addInternToList(id, body).then(setAddInternLoading(false));
 	};
 
-	const emailValidator = () => {
-		const regex =
-			/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
-		if (!intern.email || regex.test(intern.email) === false) {
-			return false;
-		}
-		return true;
-	};
-
-	// const dateValidator = () => {
-	// 	const startDate = new Date(intern.dateStart);
-	// 	const endDate = new Date(intern.dateEnd);
-	// 	return endDate.getTime() >= startDate.getTime();
-	// };
-
 	return (
-		<div>
-			<NavLink className="button button-arrow" to="/">
-				<img src={arrow} alt="arrow" />
-				Back to list{" "}
-			</NavLink>
-			<div className="container">
-				<h3>Edit</h3>
-				<form className="intern__form" onSubmit={onSubmit}>
-					<label className="intern__form_title" for="name">
-						Full name *
-					</label>
-					<input
-						className="intern__form_input"
-						type="text"
-						name="name"
-						value={intern.name}
-						onChange={(e) => handleChange(e)}
-						required
-					/>
-					<label className="intern__form_title" for="email">
-						Email address *
-					</label>
-					<input
-						className="intern__form_input"
-						type="text"
-						name="email"
-						value={intern.email}
-						onChange={(e) => handleChange(e)}
-						required
-					/>
-					<div className="wrapper">
-						<label className="intern__form_title" for="internshipStart">
-							Internship start *
-						</label>
-						<label className="intern__form_title" for="internshipEnd">
-							Internship end *
-						</label>
-						<input
-							className="intern__form_input intern__form_input-date"
-							type="date"
-							name="internshipStart"
-							value={intern.internshipStart}
-							onChange={(e) => handleChange(e)}
-						/>
-						<input
-							className="intern__form_input intern__form_input-date"
-							type="date"
-							name="internshipEnd"
-							value={intern.internshipEnd}
-							onChange={(e) => handleChange(e)}
-						/>
-					</div>
+		<Formik
+			enableReinitialize
+			initialValues={{
+				name: intern.name,
+				email: intern.email,
+				internshipStart: "",
+				internshipEnd: "",
+			}}
+			validationSchema={Yup.object({
+				name: Yup.string()
+					.min(3, "The minimum length of a name is 3")
+					.required("This field is required"),
+				email: Yup.string()
+					.required("This field is required")
+					.email("Invalid email address"),
+				internshipStart: Yup.date().required("This field is required"),
+				internshipEnd: Yup.date()
+					.required("This field is required")
+					.min(Yup.ref("internshipStart"), "This date is not correct"),
+			})}
+			onSubmit={(values) => onHandleSubmit(values)}
+		>
+			<div>
+				<NavLink className="button button-arrow" to="/">
+					<img src={arrow} alt="arrow" />
+					Back to list{" "}
+				</NavLink>
+				<div className="container">
+					<h3>Edit</h3>
+					<Form className="intern__form">
+						<div className="intern__form_block">
+							<label className="intern__form_title" htmlFor="name">
+								Full name *
+							</label>
+							<Field
+								className="intern__form_input"
+								type="text"
+								name="name"
+								value={intern.name}
+								onChange={(e) => handleChange(e)}
+							/>
+							<ErrorMessage className="error" name="name" component="div" />
+						</div>
+						<div className="intern__form_block">
+							<label className="intern__form_title" htmlFor="email">
+								Email address *
+							</label>
+							<Field
+								className="intern__form_input"
+								type="text"
+								name="email"
+								value={intern.email}
+								onChange={(e) => handleChange(e)}
+							/>
+							<ErrorMessage className="error" name="email" component="div" />
+						</div>
+						<div className="wrapper">
+							<div className="intern__form_dates">
+								<label className="intern__form_title" htmlFor="internshipStart">
+									Internship start *
+								</label>
 
-					<button
-						className="intern__form_button"
-						disabled={addInternLoading}
-						type="submit"
-						value="Submit"
-					>
-						Submit
-					</button>
-				</form>
+								<Field
+									className="intern__form_input intern__form_input-date"
+									type="date"
+									name="internshipStart"
+									// value={intern.internshipStart}
+									// onChange={(e) => handleChange(e)}
+								/>
+								<ErrorMessage
+									className="error"
+									name="internshipStart"
+									component="div"
+								/>
+							</div>
+							<div className="intern__form_dates">
+								<label className="intern__form_title" htmlFor="internshipEnd">
+									Internship end *
+								</label>
+								<Field
+									className="intern__form_input intern__form_input-date"
+									type="date"
+									name="internshipEnd"
+									// value={intern.internshipEnd}
+									// onChange={(e) => handleChange(e)}
+								/>
+								<ErrorMessage
+									className="error"
+									name="internshipEnd"
+									component="div"
+								/>
+							</div>
+						</div>
+
+						<button
+							className="intern__form_button"
+							disabled={addInternLoading}
+							type="submit"
+							value="Submit"
+						>
+							Submit
+						</button>
+					</Form>
+				</div>
 			</div>
-		</div>
+		</Formik>
 	);
 };
 
